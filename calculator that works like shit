@@ -7,18 +7,9 @@ public class Main {
         System.out.println("Welcome! In this program, you can write math primer and my program will try to solve it!\nType 'info' for info");
         String problem;
         int actions = 0;
-        int now_actions = -1;
         int pow = 0;
-        int num_num = 0;
-        int open = -1;
-        int open_char = 0;
-        int close = -1;
         boolean ERROR = false;
-        int close_char = 0;
-        int action = 0;
         int actions_maker = 1;
-        int actions_maker_2 = 1;
-        int wtf_work_please = 1;
         double answer = 0;
         boolean end = false;
         boolean info = false;
