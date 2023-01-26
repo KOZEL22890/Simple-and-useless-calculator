@@ -1,0 +1,249 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Welcome! In this program, you can write math primer and my program will try to solve it!\nType 'info' for info");
+        String problem;
+        int actions = 0;
+        int now_actions = -1;
+        int pow = 0;
+        int num_num = 0;
+        int open = -1;
+        int open_char = 0;
+        int close = -1;
+        boolean ERROR = false;
+        int close_char = 0;
+        int action = 0;
+        int actions_maker = 1;
+        int actions_maker_2 = 1;
+        int wtf_work_please = 1;
+        double answer = 0;
+        boolean end = false;
+        boolean info = false;
+        String filler;
+        while (!end) {
+            actions = 0;
+            actions_maker = 0;
+            problem = scanner.nextLine();
+            while(problem.equals(""))
+            problem = scanner.nextLine();
+            if (problem.equals("info")) {
+                System.out.println("for summing use +, for subtraction use -");
+                System.out.println("for multiplication use *, for division use :");
+                System.out.println("for exponentiation use ^, for root use 's'");
+                info = true;
+            } else if (problem.equals("exit")) {
+                end=true;
+                System.out.println("See you soon!");
+            } else {
+                problem = problem.replace(" ", "");
+                char[] math = problem.toCharArray();
+                actions = actions_find(math, actions);
+                double[] numbers = new double[actions + 1];
+                numbers = fill_numbers(numbers, math, pow, actions);
+                char[] math_wt_num = new char[actions];
+                math_wt_num = delete_numbers(math, math_wt_num);
+                ERROR = check_for_errors(math_wt_num, math, numbers, ERROR, actions);
+                if (ERROR) {
+                    System.out.println("Oops, your problem have some errors, like '/0' or incorrect symbols. Try re-write your problem");
+                    actions_maker = 4;
+                }
+                while (actions_maker < 4) {
+                    if (actions_maker == 1) {
+                        for (int j = 0; j < math_wt_num.length; j++) {
+                            if (math_wt_num[j] == 94) {
+                                double tmp = Math.pow(numbers[j], numbers[j + 1]);
+                                check(tmp);
+                                answer = tmp;
+                                System.out.println(numbers[j] + "" + math_wt_num[j] + "" + numbers[j + 1] + "=" + tmp);
+                                math_wt_num[j] = 32;
+                                filler = scanner.nextLine();
+                                correct_problem(numbers, tmp, j, math_wt_num);
+                            }
+                            else if(math_wt_num[j] == 115){
+                                double tmp = 0;
+                                tmp = root_find(tmp,numbers[j],numbers[j+1]);
+                                check(tmp);
+                                answer = tmp;
+                                System.out.println(numbers[j] + "" + math_wt_num[j] + "" + numbers[j + 1] + "=" + tmp);
+                                math_wt_num[j] = 32;
+                                filler = scanner.nextLine();
+                                correct_problem(numbers, tmp, j, math_wt_num);
+                            }
+                        }
+                    }
+                    else if (actions_maker == 2) {
+                        for (int j = 0; j < math_wt_num.length; j++) {
+                            if (math_wt_num[j] == 42) {
+                                double tmp = numbers[j] *  numbers[j + 1];
+                                check(tmp);
+                                answer = tmp;
+                                System.out.println(numbers[j] + "" + math_wt_num[j] + "" + numbers[j + 1] + "=" + tmp);
+                                math_wt_num[j] = 32;
+                                filler = scanner.nextLine();
+                                correct_problem(numbers, tmp, j, math_wt_num);
+                            }
+                            else if (math_wt_num[j] == 47) {
+                                double tmp = numbers[j] /  numbers[j + 1];
+                                check(tmp);
+                                answer = tmp;
+                                System.out.println(numbers[j] + "" + math_wt_num[j] + "" + numbers[j + 1] + "=" + tmp);
+                                math_wt_num[j] = 32;
+                                filler = scanner.nextLine();
+                                correct_problem(numbers, tmp, j, math_wt_num);
+                            }
+                        }
+                    }
+                    else if (actions_maker == 3) {
+                        for (int j = 0; j < math_wt_num.length; j++) {
+                            if (math_wt_num[j] == 43) {
+                                double tmp = numbers[j] +  numbers[j + 1];
+                                check(tmp);
+                                answer = tmp;
+                                System.out.println(numbers[j] + "" + math_wt_num[j] + "" + numbers[j + 1] + "=" + tmp);
+                                math_wt_num[j] = 32;
+                                filler = scanner.nextLine();
+                                correct_problem(numbers, tmp, j, math_wt_num);
+                            }
+                            else if (math_wt_num[j] == 45) {
+                                double tmp = numbers[j] -  numbers[j + 1];
+                                check(tmp);
+                                answer = tmp;
+                                System.out.println(numbers[j] + "" + math_wt_num[j] + "" + numbers[j + 1] + "=" + tmp);
+                                math_wt_num[j] = 32;
+                                filler = scanner.nextLine();
+                                correct_problem(numbers, tmp, j, math_wt_num);
+                            }
+                        }
+                    }
+                    actions_maker++;
+                }
+                if(!ERROR&&!info) {
+                    for (int i = 0; i < math.length; i++) {
+                        System.out.print(math[i]);
+                    }
+                    System.out.println("=" + answer);
+                    System.out.println("Cool, right? You can write another problem, or quit writing 'exit'");
+                }
+                ERROR = false;
+            }
+        }
+    }
+
+
+    public static int actions_find(char[] math, int actions) {
+        for (int i = 0; i < math.length; i++) {
+            if (math[i] < 48 || math[i] > 57) {
+                if (math[i] != 46) {
+                    actions++;
+                }
+            }
+        }
+        return actions;
+    }
+
+    public static double[] fill_numbers(double[] numbers, char[] math, int pow, int actions_w_s) {
+        int some_shit = 0;
+        int hz = 1;
+        for (int i = math.length - 1; i >= 0; i--) {
+            if (math[i] != 46 && math[i] < 48 || math[i] > 57 && math[i] != 46) {
+                if (math[i] < 48 || math[i] > 57) {
+                    pow = 0;
+                    some_shit++;
+                    hz = 1;
+                }
+            } else {
+                if (math[i] == 46) {
+                    numbers[actions_w_s - some_shit] /= hz;
+                    pow = 0;
+                } else {
+                    numbers[actions_w_s - some_shit] += ((int) math[i] - 48) * Math.pow(10, pow);
+                    pow++;
+                    hz *= 10;
+                }
+            }
+        }
+        return numbers;
+    }
+
+    public static char[] delete_numbers(char[] math, char[] math_wt_num) {
+        int hz = 0;
+        for (int i = 0; i < math.length; i++) {
+            if (math[i] < 48 || math[i] > 57) {
+                if (math[i] != 46) {
+                    math_wt_num[hz] = math[i];
+                    hz++;
+                }
+            }
+        }
+        return math_wt_num;
+    }
+
+    public static double[] correct_problem(double[] numbers, double tmp, int j, char[] math_wt_num) {
+        for (int a = j; a < math_wt_num.length; a++) {
+            if (math_wt_num[a] != 32) {
+                numbers[a] = tmp;
+                break;
+            } else if (a == math_wt_num.length - 1) {
+                numbers[a + 1] = tmp;
+            }
+        }
+        for (int a = j; a >= 0; a--) {
+            if (math_wt_num[a] != 32) {
+                numbers[a + 1] = tmp;
+                break;
+            }
+            else if (a == 0) {
+                numbers[a] = tmp;
+            }
+        }
+        return numbers;
+    }
+
+    public static boolean check_for_errors(char[] math_wt_n, char[] math, double[] numbers, boolean ERROR, int actions) {
+        int dot_cnt = 0;
+        int actions_cnt = 0;
+        for (int i = 0; i < math.length; i++) {
+            if (math[i] == 42 || math[i] == 43 || math[i] == 45 || math[i] == 47 || math[i] == 94 ||math[i] == 115|| math[i] == 46 || math[i] >= 48 && math[i] <= 57) {
+                if (math[i] == 46) dot_cnt++;
+                else if (math[i] == 42 || math[i] == 43 || math[i] == 45 || math[i] == 47 || math[i] == 94|| math[i] == 115){
+                    dot_cnt = 0;
+                    actions_cnt++;
+                }
+                else actions_cnt = 0;
+            }
+            else ERROR = true;
+            if (dot_cnt >= 2|| actions_cnt>=22) ERROR = true;
+        }
+        for (int i = 0; i < math_wt_n.length; i++) {
+            if (math_wt_n[i] == 47 && numbers[i+1] == 0) ERROR = true;
+            else if (math_wt_n[i] == 115 && numbers[i+1] == 0) ERROR = true;
+        }
+        if(actions==0)ERROR = true;
+        return ERROR;
+    }
+
+    public static double root_find(double tmp, double rootable, double root_num){
+        double useless_shit = rootable;
+        double remnant = 0;
+        while(Math.abs(Math.pow(useless_shit,root_num)-rootable)>0.00000000001){
+            double tmp_2 = useless_shit;
+            if(Math.pow(useless_shit,root_num)>rootable){
+                useless_shit -= Math.abs(useless_shit-remnant)/2;
+            }
+            else {
+                useless_shit += Math.abs(useless_shit-remnant)/2;
+            }
+            remnant = tmp_2;
+        }
+        return useless_shit;
+    }
+
+    public static double check (double tmp){
+        if(Math.abs((int)Math.round(tmp)-tmp)<0.0000000001)tmp = Math.round(tmp);
+        return tmp;
+    }
+}
+// 11 = 0.00000000001 погрешность
