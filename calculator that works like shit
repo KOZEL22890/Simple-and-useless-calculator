@@ -56,7 +56,6 @@ public class Main {
                                 double tmp = 0;
                                 tmp = root_find(tmp, numbers[j], numbers[j + 1]);
                                 check(tmp);
-                                if(numbers[j + 1]==0)actions_maker=4;
                                 answer = tmp;
                                 System.out.println(numbers[j] + "" + math_wt_num[j] + "" + numbers[j + 1] + "=" + tmp);
                                 math_wt_num[j] = 32;
@@ -216,7 +215,7 @@ public class Main {
         double remnant = 0;
         while (Math.abs(Math.pow(useless_shit, root_num) - rootable) > 0.00000000001) {
             if(root_num==0){
-                useless_shit/=0;
+                useless_shit=1;
                 break;
             }
             double tmp_2 = useless_shit;
